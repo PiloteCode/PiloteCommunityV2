@@ -9,7 +9,7 @@ export async function initializeDatabase() {
         console.log('🔄 Initialisation de la base de données...');
         
         db = await open({
-            filename: './economy.db',
+            filename: './database.sqlite',
             driver: sqlite3.Database
         });
 
