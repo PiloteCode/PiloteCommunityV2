@@ -1,4 +1,3 @@
-// src/main.js
 import { 
     Client, 
     GatewayIntentBits, 

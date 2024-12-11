@@ -1,6 +1,6 @@
-// src/database/manager.js
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
+import { SCHEMA } from './schema.js'; 
 
 let db = null;
 
@@ -13,17 +13,21 @@ export async function initializeDatabase() {
             driver: sqlite3.Database
         });
 
-        await db.exec(`
-            CREATE TABLE IF NOT EXISTS users (
-                user_id TEXT PRIMARY KEY,
-                balance INTEGER DEFAULT 0,
-                bank INTEGER DEFAULT 0,
-                experience INTEGER DEFAULT 0,
-                level INTEGER DEFAULT 1,
-                last_daily TEXT,
-                last_worked TEXT
-            )
-        `);
+        for (const [tableName, createTableSQL] of Object.entries(SCHEMA)) {
+            console.log(`📝 Création de la table ${tableName}...`);
+            await db.exec(createTableSQL);
+        }
+
+        const shopItems = await db.all('SELECT * FROM shop');
+        if (shopItems.length === 0) {
+            console.log('📝 Initialisation des items de base dans la boutique...');
+            await db.run(`
+                INSERT INTO shop (item_id, name, description, price, type) VALUES
+                ('fishing_rod', 'Canne à pêche', 'Permet de pêcher des poissons', 1000, 'tool'),
+                ('pickaxe', 'Pioche', 'Permet de miner des minerais', 1500, 'tool'),
+                ('backpack', 'Sac à dos', 'Augmente la capacité de stockage', 2000, 'upgrade');
+            `);
+        }
 
         console.log('✅ Base de données initialisée avec succès');
         return db;
@@ -32,7 +36,6 @@ export async function initializeDatabase() {
         throw error;
     }
 }
-
 export async function getUser(userId) {
     try {
         if (!db) {
