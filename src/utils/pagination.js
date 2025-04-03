@@ -118,3 +118,17 @@ export class PaginationManager {
     });
   }
 }
+
+export function createPaginationRow() {
+  return new ActionRowBuilder()
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId('previous_page')
+        .setLabel('◀️')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId('next_page')
+        .setLabel('▶️')
+        .setStyle(ButtonStyle.Primary)
+    );
+}

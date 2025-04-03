@@ -54,9 +54,6 @@ export const event = {
           case 'buy':
             await handleBuyButton(interaction, args);
             break;
-          case 'trade':
-            await handleTradeButton(interaction, args);
-            break;
           case 'confirm':
             await handleConfirmButton(interaction, args);
             break;
@@ -72,9 +69,6 @@ export const event = {
         const [action, ...args] = interaction.customId.split('_');
         
         switch (action) {
-          case 'cards':
-            await handleCardSelection(interaction, args);
-            break;
           case 'filter':
             await handleFilterSelection(interaction, args);
             break;

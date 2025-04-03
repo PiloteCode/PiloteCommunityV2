@@ -18,12 +18,10 @@ export async function handleShopBuy(interaction, itemId) {
     });
   }
 
-
   await updateUser(userData.user_id, {
     balance: userData.balance - shopItem.price
   });
   await addToInventory(userData.user_id, itemId);
-
 
   if (shopItem.type === 'role' && shopItem.role_id) {
     const member = await interaction.guild.members.fetch(interaction.user.id);
@@ -35,7 +33,6 @@ export async function handleShopBuy(interaction, itemId) {
     ephemeral: true
   });
 }
-
 
 import { Events } from 'discord.js';
 import { handleShopBuy } from '../components/buttons/handlers.js';

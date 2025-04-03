@@ -120,6 +120,18 @@ class DatabaseManager {
         }
     }
 
+    async getShopItem(itemId) {
+        try {
+            const db = await this.getDatabase();
+            
+            const item = await db.get('SELECT * FROM shop WHERE item_id = ?', itemId);
+            return item;
+        } catch (error) {
+            console.error('❌ Erreur lors de la récupération de l\'item:', error);
+            throw error;
+        }
+    }
+
     async addAchievement(userId, achievementId) {
         try {
             const db = await this.getDatabase();
@@ -164,6 +176,38 @@ class DatabaseManager {
         }
     }
 
+    async removeFromInventory(userId, itemId, quantity = 1) {
+        try {
+            const db = await this.getDatabase();
+            
+            const existingItem = await db.get(
+                'SELECT * FROM inventory WHERE user_id = ? AND item_id = ?',
+                userId, itemId
+            );
+            
+            if (!existingItem) {
+                throw new Error('Item not found in inventory');
+            }
+            
+            if (existingItem.quantity <= quantity) {
+                await db.run(
+                    'DELETE FROM inventory WHERE user_id = ? AND item_id = ?',
+                    userId, itemId
+                );
+            } else {
+                await db.run(
+                    'UPDATE inventory SET quantity = quantity - ? WHERE user_id = ? AND item_id = ?',
+                    quantity, userId, itemId
+                );
+            }
+            
+            return await this.getInventory(userId);
+        } catch (error) {
+            console.error('❌ Erreur lors du retrait de l\'inventaire:', error);
+            throw error;
+        }
+    }
+
     async recordTransaction(fromUser, toUser, amount, type) {
         try {
             const db = await this.getDatabase();
@@ -180,7 +224,6 @@ class DatabaseManager {
         }
     }
 
-    // Méthodes spécifiques aux cartes
     async executeQuery(query, params = []) {
         const db = await this.getDatabase();
         return await db.all(query, ...params);
@@ -195,16 +238,32 @@ class DatabaseManager {
 // Créer une instance unique
 const dbManager = new DatabaseManager();
 
-// Exporter l'instance et les méthodes
+// Pour résoudre le problème d'exportation, nous allons lier les méthodes à l'instance
+const getUser = (userId) => dbManager.getUser(userId);
+const updateUser = (userId, data) => dbManager.updateUser(userId, data);
+const getInventory = (userId) => dbManager.getInventory(userId);
+const getShopItems = () => dbManager.getShopItems();
+const getShopItem = (itemId) => dbManager.getShopItem(itemId);
+const addAchievement = (userId, achievementId) => dbManager.addAchievement(userId, achievementId);
+const addToInventory = (userId, itemId, quantity) => dbManager.addToInventory(userId, itemId, quantity);
+const removeFromInventory = (userId, itemId, quantity) => dbManager.removeFromInventory(userId, itemId, quantity);
+const recordTransaction = (fromUser, toUser, amount, type) => dbManager.recordTransaction(fromUser, toUser, amount, type);
+const executeQuery = (query, params) => dbManager.executeQuery(query, params);
+const executeRun = (query, params) => dbManager.executeRun(query, params);
+
+// Exporter l'instance et les méthodes liées
 export default dbManager;
-export const {
+export {
     getUser,
     updateUser,
     getInventory,
     getShopItems,
+    getShopItem,
     addAchievement,
     addToInventory,
+    removeFromInventory,
     recordTransaction,
     executeQuery,
     executeRun
-} = dbManager;
+};
+export const db = dbManager;
