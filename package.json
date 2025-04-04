@@ -5,36 +5,38 @@
     "main": "src/main.js",
     "type": "module",
     "scripts": {
-      "start": "node src/main.js",
-      "dev": "nodemon src/main.js",
-      "deploy": "node src/deploy-commands.js",
-      "deploy:dev": "node src/deploy-commands.js --dev",
-      "lint": "eslint src/**/*.js",
-      "format": "prettier --write src/**/*.js",
-      "backup-db": "node src/utils/backup-database.js",
-      "test": "jest"
+        "start": "node src/main.js",
+        "dev": "nodemon src/main.js",
+        "deploy": "node src/deploy-commands.js",
+        "deploy:dev": "node src/deploy-commands.js --dev",
+        "lint": "eslint src/**/*.js",
+        "format": "prettier --write src/**/*.js",
+        "backup-db": "node src/utils/backup-database.js",
+        "test": "jest"
     },
     "keywords": [
-      "discord",
-      "bot",
-      "economy",
-      "sqlite"
+        "discord",
+        "bot",
+        "economy",
+        "sqlite"
     ],
     "author": "Pilote Production",
     "license": "MIT",
     "dependencies": {
-      "discord.js": "^14.14.1",
-      "dotenv": "^16.3.1",
-      "sqlite": "^5.0.1",
-      "sqlite3": "^5.1.6"
+        "canvas": "^3.1.0",
+        "discord.js": "^14.14.1",
+        "dotenv": "^16.3.1",
+        "node-fetch": "^3.3.2",
+        "sqlite": "^5.0.1",
+        "sqlite3": "^5.1.6"
     },
     "devDependencies": {
-      "eslint": "^8.56.0",
-      "jest": "^29.7.0",
-      "nodemon": "^3.0.2",
-      "prettier": "^3.1.1"
+        "eslint": "^8.57.1",
+        "jest": "^29.7.0",
+        "nodemon": "^3.1.9",
+        "prettier": "^3.5.3"
     },
     "engines": {
-      "node": ">=18.0.0"
+        "node": ">=18.0.0"
     }
-  }
+}
