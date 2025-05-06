@@ -1,4 +1,5 @@
 import { EmbedCreator } from '../utils/embedCreator.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export default {
   customId: 'hot_potato',
@@ -57,8 +58,6 @@ export default {
         });
         
         // Create pass button
-        const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = await import('discord.js');
-        
         const passButton = new ActionRowBuilder()
           .addComponents(
             new ButtonBuilder()
