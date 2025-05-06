@@ -4,10 +4,12 @@ import logger from './logs/logger.js';
 /**
  * Synchronize command definitions with Discord API
  * @param {Object} client - Discord client
- * @param {boolean} devMode - Whether to sync commands to a specific guild only
+ * @param {Object|boolean} options - Options object or boolean for backward compatibility
+ * @param {boolean} options.global - Whether to sync commands globally
+ * @param {string} options.guildId - Guild ID to sync commands to (if not global)
  * @returns {Promise<void>}
  */
-export async function syncCommands(client, devMode = false) {
+export async function syncCommands(client, options = { global: true, guildId: null }) {
   const commands = [];
   
   // Convert commands to API format
@@ -21,15 +23,28 @@ export async function syncCommands(client, devMode = false) {
   try {
     logger.info(`Started refreshing ${commands.length} application (/) commands.`);
     
+    // Handle legacy boolean parameter (backward compatibility)
+    let isGlobal = true;
+    let guildId = process.env.GUILD_ID;
+    
+    if (typeof options === 'boolean') {
+      // Old style: devMode boolean parameter
+      isGlobal = !options;
+    } else if (typeof options === 'object') {
+      // New style: options object
+      isGlobal = options.global !== false;
+      guildId = options.guildId || process.env.GUILD_ID;
+    }
+    
     // Register commands
     let data;
     
-    if (devMode && process.env.GUILD_ID) {
+    if (!isGlobal && guildId) {
       // Register commands to a specific guild (faster during development)
-      logger.info(`Registering commands to guild ${process.env.GUILD_ID} (dev mode)`);
+      logger.info(`Registering commands to guild ${guildId} (dev mode)`);
       
       data = await rest.put(
-        Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
+        Routes.applicationGuildCommands(process.env.CLIENT_ID, guildId),
         { body: commands }
       );
       

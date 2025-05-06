@@ -214,20 +214,19 @@ async function init() {
     displayLoadingMessage('Logging in to Discord');
     await client.login(process.env.BOT_TOKEN);
     
-    // Sync commands if needed
-    if (process.argv.includes('--sync')) {
-      const syncMode = process.argv.includes('--global') ? 'global' : 'guild';
-      displayLoadingMessage(`Syncing commands to Discord API (${syncMode} mode)`);
-      const { syncCommands } = await import('./utils/syncCommands.js');
-      
-      const options = {
-        global: syncMode === 'global',
-        guildId: process.env.GUILD_ID || process.env.DEV_GUILD_ID
-      };
-      
-      await syncCommands(client, options);
-      displaySuccessMessage(`Commands synced successfully in ${syncMode} mode`);
-    }
+    // Synchroniser toujours les commandes automatiquement
+    const syncMode = process.env.SYNC_GLOBAL === 'true' ? 'global' : 'guild';
+    displayLoadingMessage(`Syncing commands to Discord API (${syncMode} mode)`);
+    const { syncCommands } = await import('./utils/syncCommands.js');
+    
+    const options = {
+      global: syncMode === 'global',
+      guildId: process.env.GUILD_ID || process.env.DEV_GUILD_ID
+    };
+    
+    await syncCommands(client, options);
+    displaySuccessMessage(`Commands synced successfully in ${syncMode} mode`);
+    
   } catch (error) {
     displayErrorMessage('Initialization failed', error);
     process.exit(1);
