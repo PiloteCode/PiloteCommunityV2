@@ -142,6 +142,12 @@ export default {
         
         return interaction.editReply({ embeds: [successEmbed] });
       } else if (subcommand === 'info') {
+        // Si l'utilisateur n'a pas encore de compte bancaire, créer un
+        if (!bankData) {
+          await createBankAccount(client, userId);
+          bankData = await getBankData(client, userId);
+        }
+        
         // Calculer les intérêts journaliers et la date du prochain versement
         const dailyInterest = Math.floor(bankData.balance * 0.01);
         const nextInterestDate = new Date(bankData.last_interest);

@@ -45,12 +45,23 @@ export default {
         // Try to remove AFK prefix from nickname if it exists
         try {
           if (interaction.member.displayName.startsWith('[AFK] ')) {
-            await interaction.member.setNickname(
-              interaction.member.displayName.replace('[AFK] ', '')
-            );
+            // Vérifier si le bot a la permission de changer le pseudo
+            const botMember = interaction.guild.members.cache.get(client.user.id);
+            const canChangeName = interaction.member.manageable && 
+                                 botMember.permissions.has('ManageNicknames');
+            
+            if (canChangeName) {
+              await interaction.member.setNickname(
+                interaction.member.displayName.replace('[AFK] ', '')
+              );
+            } else {
+              // Si le bot n'a pas la permission, on ne fait rien mais on continue sans erreur
+              console.log(`Cannot change nickname for ${interaction.user.tag} - insufficient permissions`);
+            }
           }
         } catch (nickError) {
-          console.warn('Could not update nickname:', nickError);
+          // Erreur silencieuse, on continue sans le changement de pseudo
+          console.warn('Could not update nickname:', nickError.message);
         }
         
         // Confirm AFK status removed
@@ -73,12 +84,23 @@ export default {
         // Try to update nickname with AFK prefix
         try {
           if (!interaction.member.displayName.startsWith('[AFK] ')) {
-            await interaction.member.setNickname(
-              `[AFK] ${interaction.member.displayName.substring(0, 25)}`
-            );
+            // Vérifier si le bot a la permission de changer le pseudo
+            const botMember = interaction.guild.members.cache.get(client.user.id);
+            const canChangeName = interaction.member.manageable && 
+                                 botMember.permissions.has('ManageNicknames');
+            
+            if (canChangeName) {
+              await interaction.member.setNickname(
+                `[AFK] ${interaction.member.displayName.substring(0, 25)}`
+              );
+            } else {
+              // Si le bot n'a pas la permission, on ne fait rien mais on continue sans erreur
+              console.log(`Cannot change nickname for ${interaction.user.tag} - insufficient permissions`);
+            }
           }
         } catch (nickError) {
-          console.warn('Could not update nickname:', nickError);
+          // Erreur silencieuse, on continue sans le changement de pseudo
+          console.warn('Could not update nickname:', nickError.message);
         }
         
         // Confirm AFK status

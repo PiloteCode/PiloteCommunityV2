@@ -125,6 +125,22 @@ export class EmbedCreator {
   }
   
   /**
+   * Create an info embed
+   * @param {string} title - Embed title
+   * @param {string} description - Embed description
+   * @param {Object} options - Additional embed options
+   * @returns {EmbedBuilder} The created embed
+   */
+  static info(title, description, options = {}) {
+    return this.create({
+      title: `ℹ️ ${title}`,
+      description,
+      color: COLORS.INFO,
+      ...options
+    });
+  }
+  
+  /**
    * Create an economy embed
    * @param {string} title - Embed title
    * @param {string} description - Embed description
