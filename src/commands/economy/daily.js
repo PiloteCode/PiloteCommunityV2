@@ -64,12 +64,12 @@ export default {
       // Create and send the embed
       const embed = EmbedCreator.success(
         '🎁 Récompense quotidienne',
-        `Vous avez réclamé votre récompense quotidienne de **${baseAmount}** crédits!`,
+        `Vous avez réclamé votre récompense quotidienne de **${baseAmount}** PiloCoins!`,
         {
           fields: [
             {
               name: '💰 Solde actuel',
-              value: `${user.balance + baseAmount} crédits`,
+              value: `${user.balance + baseAmount} PiloCoins`,
               inline: true
             },
             {

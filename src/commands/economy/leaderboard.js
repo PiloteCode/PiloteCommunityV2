@@ -79,7 +79,7 @@ export default {
         
         // Format entry based on leaderboard type
         if (type === 'wealth') {
-          description += `${position} **${username}** - ${user.balance} crédits\n`;
+          description += `${position} **${username}** - ${user.balance} PiloCoins\n`;
         } else {
           description += `${position} **${username}** - Niveau ${user.level} (${user.experience} XP)\n`;
         }

@@ -8,7 +8,7 @@ export default {
     .addSubcommand(subcommand =>
       subcommand
         .setName('deposit')
-        .setDescription('Déposez des crédits sur votre compte bancaire')
+        .setDescription('Déposez des PiloCoins sur votre compte bancaire')
         .addIntegerOption(option =>
           option.setName('montant')
             .setDescription('Montant à déposer')
@@ -17,7 +17,7 @@ export default {
     .addSubcommand(subcommand =>
       subcommand
         .setName('withdraw')
-        .setDescription('Retirez des crédits de votre compte bancaire')
+        .setDescription('Retirez des PiloCoins de votre compte bancaire')
         .addIntegerOption(option =>
           option.setName('montant')
             .setDescription('Montant à retirer')
@@ -54,7 +54,7 @@ export default {
         if (user.balance < amount) {
           const errorEmbed = EmbedCreator.error(
             'Fonds insuffisants',
-            `Vous n'avez pas assez de crédits pour déposer ${amount} crédits. Solde actuel: ${user.balance} crédits.`
+            `Vous n'avez pas assez de PiloCoins pour déposer ${amount} PiloCoins. Solde actuel: ${user.balance} PiloCoins.`
           );
           return interaction.editReply({ embeds: [errorEmbed] });
         }
@@ -71,22 +71,22 @@ export default {
         // Créer l'embed de confirmation
         const successEmbed = EmbedCreator.success(
           '🏦 Dépôt effectué avec succès!',
-          `Vous avez déposé **${amount} crédits** sur votre compte bancaire.`,
+          `Vous avez déposé **${amount} PiloCoins** sur votre compte bancaire.`,
           {
             fields: [
               {
                 name: '💰 Solde bancaire',
-                value: `${updatedBankData.balance} crédits`,
+                value: `${updatedBankData.balance} PiloCoins`,
                 inline: true
               },
               {
                 name: '💵 Solde portefeuille',
-                value: `${user.balance - amount} crédits`,
+                value: `${user.balance - amount} PiloCoins`,
                 inline: true
               },
               {
                 name: '📈 Intérêts',
-                value: `+${(updatedBankData.balance * 0.01).toFixed(0)} crédits par jour`,
+                value: `+${(updatedBankData.balance * 0.01).toFixed(0)} PiloCoins par jour`,
                 inline: true
               }
             ]
@@ -101,7 +101,7 @@ export default {
         if (bankData.balance < amount) {
           const errorEmbed = EmbedCreator.error(
             'Fonds insuffisants',
-            `Vous n'avez pas assez de crédits dans votre compte bancaire pour retirer ${amount} crédits. Solde bancaire: ${bankData.balance} crédits.`
+            `Vous n'avez pas assez de PiloCoins dans votre compte bancaire pour retirer ${amount} PiloCoins. Solde bancaire: ${bankData.balance} PiloCoins.`
           );
           return interaction.editReply({ embeds: [errorEmbed] });
         }
@@ -118,22 +118,22 @@ export default {
         // Créer l'embed de confirmation
         const successEmbed = EmbedCreator.success(
           '🏦 Retrait effectué avec succès!',
-          `Vous avez retiré **${amount} crédits** de votre compte bancaire.`,
+          `Vous avez retiré **${amount} PiloCoins** de votre compte bancaire.`,
           {
             fields: [
               {
                 name: '💰 Solde bancaire',
-                value: `${updatedBankData.balance} crédits`,
+                value: `${updatedBankData.balance} PiloCoins`,
                 inline: true
               },
               {
                 name: '💵 Solde portefeuille',
-                value: `${user.balance + amount} crédits`,
+                value: `${user.balance + amount} PiloCoins`,
                 inline: true
               },
               {
                 name: '📈 Intérêts',
-                value: `+${(updatedBankData.balance * 0.01).toFixed(0)} crédits par jour`,
+                value: `+${(updatedBankData.balance * 0.01).toFixed(0)} PiloCoins par jour`,
                 inline: true
               }
             ]
@@ -170,12 +170,12 @@ export default {
             fields: [
               {
                 name: '💰 Solde bancaire',
-                value: `${bankData.balance} crédits`,
+                value: `${bankData.balance} PiloCoins`,
                 inline: true
               },
               {
                 name: '💵 Solde portefeuille',
-                value: `${user.balance} crédits`,
+                value: `${user.balance} PiloCoins`,
                 inline: true
               },
               {
@@ -185,7 +185,7 @@ export default {
               },
               {
                 name: '💸 Prochain versement',
-                value: `${dailyInterest} crédits dans ${hoursLeft}h ${minutesLeft}m`,
+                value: `${dailyInterest} PiloCoins dans ${hoursLeft}h ${minutesLeft}m`,
                 inline: false
               },
               {
@@ -195,7 +195,7 @@ export default {
               },
               {
                 name: '📊 Total des intérêts perçus',
-                value: `${bankData.total_interest} crédits`,
+                value: `${bankData.total_interest} PiloCoins`,
                 inline: true
               }
             ]

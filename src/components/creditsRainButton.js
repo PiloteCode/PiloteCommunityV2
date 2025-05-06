@@ -25,7 +25,7 @@ export default {
           const collectors = client.collectedButtons.get(buttonKey);
           if (collectors.includes(userId)) {
             return interaction.reply({
-              content: 'Vous avez déjà récupéré ces crédits!',
+              content: 'Vous avez déjà récupéré ces PiloCoins!',
               ephemeral: true
             });
           }
@@ -46,7 +46,7 @@ export default {
         
         // Acknowledge collection
         await interaction.reply({
-          content: `Vous avez récupéré **${credits}** crédits!`,
+          content: `Vous avez récupéré **${credits}** PiloCoins!`,
           ephemeral: true
         });
         
@@ -83,7 +83,7 @@ export default {
       console.error('Error handling credits rain button:', error);
       
       await interaction.reply({
-        content: 'Une erreur est survenue lors de la récupération des crédits.',
+        content: 'Une erreur est survenue lors de la récupération des PiloCoins.',
         ephemeral: true
       }).catch(console.error);
     }

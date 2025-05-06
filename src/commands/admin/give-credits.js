@@ -3,36 +3,36 @@ import { EmbedCreator } from '../../utils/embedCreator.js';
 
 export default {
   data: new SlashCommandBuilder()
-    .setName('give-credits')
-    .setDescription('Donne des crédits à un ou plusieurs utilisateurs (Admin)')
+    .setName('give-pilocoins')
+    .setDescription('Donne des PiloCoins à un ou plusieurs utilisateurs (Admin)')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addSubcommand(subcommand =>
       subcommand
         .setName('user')
-        .setDescription('Donne des crédits à un utilisateur spécifique')
+        .setDescription('Donne des PiloCoins à un utilisateur spécifique')
         .addUserOption(option =>
           option
             .setName('utilisateur')
-            .setDescription('Utilisateur à qui donner des crédits')
+            .setDescription('Utilisateur à qui donner des PiloCoins')
             .setRequired(true)
         )
         .addIntegerOption(option =>
           option
             .setName('montant')
-            .setDescription('Montant de crédits à donner')
+            .setDescription('Montant de PiloCoins à donner')
             .setRequired(true)
         )
         .addStringOption(option =>
           option
             .setName('raison')
-            .setDescription('Raison de l\'attribution des crédits')
+            .setDescription('Raison de l\'attribution des PiloCoins')
             .setRequired(false)
         )
     )
     .addSubcommand(subcommand =>
       subcommand
         .setName('role')
-        .setDescription('Donne des crédits à tous les utilisateurs ayant un rôle spécifique')
+        .setDescription('Donne des PiloCoins à tous les utilisateurs ayant un rôle spécifique')
         .addRoleOption(option =>
           option
             .setName('role')
@@ -42,30 +42,30 @@ export default {
         .addIntegerOption(option =>
           option
             .setName('montant')
-            .setDescription('Montant de crédits à donner à chaque utilisateur')
+            .setDescription('Montant de PiloCoins à donner à chaque utilisateur')
             .setRequired(true)
         )
         .addStringOption(option =>
           option
             .setName('raison')
-            .setDescription('Raison de l\'attribution des crédits')
+            .setDescription('Raison de l\'attribution des PiloCoins')
             .setRequired(false)
         )
     )
     .addSubcommand(subcommand =>
       subcommand
         .setName('all')
-        .setDescription('Donne des crédits à tous les utilisateurs du serveur')
+        .setDescription('Donne des PiloCoins à tous les utilisateurs du serveur')
         .addIntegerOption(option =>
           option
             .setName('montant')
-            .setDescription('Montant de crédits à donner à chaque utilisateur')
+            .setDescription('Montant de PiloCoins à donner à chaque utilisateur')
             .setRequired(true)
         )
         .addStringOption(option =>
           option
             .setName('raison')
-            .setDescription('Raison de l\'attribution des crédits')
+            .setDescription('Raison de l\'attribution des PiloCoins')
             .setRequired(false)
         )
     ),
@@ -110,8 +110,8 @@ export default {
         await interaction.editReply({
           embeds: [
             EmbedCreator.success(
-              'Crédits attribués',
-              `**${amount}** crédits ont été attribués à <@${targetUser.id}>.`,
+              'PiloCoins attribués',
+              `**${amount}** PiloCoins ont été attribués à <@${targetUser.id}>.`,
               {
                 fields: [
                   {
@@ -166,7 +166,7 @@ export default {
               
               successCount++;
             } catch (memberError) {
-              console.error(`Error giving credits to user ${id}:`, memberError);
+              console.error(`Error giving PiloCoins to user ${id}:`, memberError);
             }
           }
           
@@ -175,8 +175,8 @@ export default {
           await interaction.editReply({
             embeds: [
               EmbedCreator.success(
-                'Crédits attribués',
-                `**${amount}** crédits ont été attribués à **${successCount}** membres avec le rôle **${role.name}**.`,
+                'PiloCoins attribués',
+                `**${amount}** PiloCoins ont été attribués à **${successCount}** membres avec le rôle **${role.name}**.`,
                 {
                   fields: [
                     {
@@ -231,7 +231,7 @@ export default {
               
               successCount++;
             } catch (memberError) {
-              console.error(`Error giving credits to user ${id}:`, memberError);
+              console.error(`Error giving PiloCoins to user ${id}:`, memberError);
             }
           }
           
@@ -240,8 +240,8 @@ export default {
           await interaction.editReply({
             embeds: [
               EmbedCreator.success(
-                'Crédits attribués',
-                `**${amount}** crédits ont été attribués à **${successCount}** membres du serveur.`,
+                'PiloCoins attribués',
+                `**${amount}** PiloCoins ont été attribués à **${successCount}** membres du serveur.`,
                 {
                   fields: [
                     {
@@ -261,7 +261,7 @@ export default {
       }
       
     } catch (error) {
-      console.error('Error in give-credits command:', error);
+      console.error('Error in give-pilocoins command:', error);
       
       // Send error message
       const errorEmbed = EmbedCreator.error(

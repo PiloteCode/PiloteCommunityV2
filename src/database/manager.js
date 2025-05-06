@@ -132,7 +132,7 @@ export class DatabaseManager {
         {
           item_id: 'fishing_rod',
           name: 'Canne à pêche',
-          description: 'Augmente vos chances de gagner avec la commande /work',
+          description: 'Augmente vos chances de gagner des PiloCoins avec la commande /work',
           price: 1000,
           category: 'tools',
           usable: 0,
@@ -142,7 +142,7 @@ export class DatabaseManager {
         {
           item_id: 'luck_potion',
           name: 'Potion de chance',
-          description: 'Augmente vos gains pendant 30 minutes',
+          description: 'Augmente vos gains de PiloCoins pendant 30 minutes',
           price: 500,
           category: 'consumable',
           usable: 1,
@@ -172,7 +172,7 @@ export class DatabaseManager {
         {
           item_id: 'bank_upgrade',
           name: 'Amélioration de banque',
-          description: 'Augmente votre capacité de stockage bancaire',
+          description: 'Augmente votre capacité de stockage de PiloCoins',
           price: 2500,
           category: 'upgrade',
           usable: 0,
@@ -243,8 +243,8 @@ export class DatabaseManager {
       await this.db.run(`
         INSERT INTO transactions (user_id, amount, type, description)
         VALUES (?, ?, ?, ?)
-      `, userId, amount, amount >= 0 ? 'credit' : 'debit', 
-         amount >= 0 ? 'Added funds' : 'Removed funds');
+      `, userId, amount, amount >= 0 ? 'pilocoin_added' : 'pilocoin_removed', 
+         amount >= 0 ? 'PiloCoins ajoutés' : 'PiloCoins retirés');
       
       await this.db.exec('COMMIT');
       return true;

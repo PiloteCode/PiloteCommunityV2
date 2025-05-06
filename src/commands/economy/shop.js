@@ -52,7 +52,7 @@ export default {
       
       // Add user's balance for reference
       embed.setFooter({ 
-        text: `Votre solde: ${user.balance} crédits | Utilisez /buy [id] pour acheter un objet`,
+        text: `Votre solde: ${user.balance} PiloCoins | Utilisez /buy [id] pour acheter un objet`,
         iconURL: interaction.user.displayAvatarURL({ dynamic: true })
       });
       

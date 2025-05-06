@@ -4,7 +4,7 @@ import { EmbedCreator } from '../../utils/embedCreator.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('balance')
-    .setDescription('Vérifiez votre solde de crédits ou celui d\'un autre utilisateur')
+    .setDescription('Vérifiez votre solde de PiloCoins ou celui d\'un autre utilisateur')
     .addUserOption(option => 
       option
         .setName('utilisateur')
@@ -30,8 +30,8 @@ export default {
       const embed = EmbedCreator.economy(
         'Solde',
         targetUser.id === interaction.user.id 
-          ? `Vous avez actuellement **${userData.balance}** crédits.`
-          : `<@${targetUserId}> a actuellement **${userData.balance}** crédits.`,
+          ? `Vous avez actuellement **${userData.balance}** PiloCoins.`
+          : `<@${targetUserId}> a actuellement **${userData.balance}** PiloCoins.`,
         {
           thumbnail: targetUser.displayAvatarURL({ dynamic: true }),
           fields: [

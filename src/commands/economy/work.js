@@ -4,7 +4,7 @@ import { EmbedCreator } from '../../utils/embedCreator.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('work')
-    .setDescription('Travaillez pour gagner des crédits'),
+    .setDescription('Travaillez pour gagner des PiloCoins'),
   
   // Cooldown in milliseconds (1 hour)
   cooldown: 60 * 60 * 1000,
@@ -43,35 +43,35 @@ export default {
       // Create an array of possible work scenarios
       const workScenarios = [
         {
-          description: `Vous avez passé quelques heures à pêcher et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          description: `Vous avez passé quelques heures à pêcher et avez gagné **${earnings}** PiloCoins${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
           emoji: '🎣'
         },
         {
-          description: `Vous avez aidé à livrer des colis et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          description: `Vous avez aidé à livrer des colis et avez gagné **${earnings}** PiloCoins${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
           emoji: '📦'
         },
         {
-          description: `Vous avez fait le ménage chez un client et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          description: `Vous avez fait le ménage chez un client et avez gagné **${earnings}** PiloCoins${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
           emoji: '🧹'
         },
         {
-          description: `Vous avez vendu des produits à la boutique locale et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          description: `Vous avez vendu des produits à la boutique locale et avez gagné **${earnings}** PiloCoins${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
           emoji: '🏪'
         },
         {
-          description: `Vous avez réparé le PC de quelqu'un et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          description: `Vous avez réparé le PC de quelqu'un et avez gagné **${earnings}** PiloCoins${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
           emoji: '💻'
         },
         {
-          description: `Vous avez fait des courses pour une personne âgée et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          description: `Vous avez fait des courses pour une personne âgée et avez gagné **${earnings}** PiloCoins${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
           emoji: '🛒'
         },
         {
-          description: `Vous avez participé à une enquête en ligne et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          description: `Vous avez participé à une enquête en ligne et avez gagné **${earnings}** PiloCoins${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
           emoji: '📊'
         },
         {
-          description: `Vous avez travaillé comme agent de sécurité et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          description: `Vous avez travaillé comme agent de sécurité et avez gagné **${earnings}** PiloCoins${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
           emoji: '👮'
         }
       ];
@@ -87,7 +87,7 @@ export default {
           fields: [
             {
               name: '💰 Solde actuel',
-              value: `${user.balance + earnings} crédits`,
+              value: `${user.balance + earnings} PiloCoins`,
               inline: true
             },
             {

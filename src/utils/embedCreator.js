@@ -177,7 +177,7 @@ export class EmbedCreator {
       description: `<@${user_id}>`,
       color: COLORS.PROFILE,
       fields: [
-        { name: '💰 Solde', value: `${balance} crédits`, inline: true },
+        { name: '💰 Solde', value: `${balance} PiloCoins`, inline: true },
         { name: '📊 Niveau', value: `${level}`, inline: true },
         { name: '⭐ Expérience', value: `${experience} / ${nextLevelExp} XP`, inline: true },
         { name: '📈 Progression', value: progressBar, inline: false }
@@ -239,7 +239,7 @@ export class EmbedCreator {
       // Add items from this category
       categoryItems.forEach(item => {
         fields.push({
-          name: `${item.name} - ${item.price} crédits`,
+          name: `${item.name} - ${item.price} PiloCoins`,
           value: `ID: \`${item.item_id}\`\n${item.description}`,
           inline: true
         });

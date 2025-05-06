@@ -32,7 +32,7 @@ export default {
           embeds: [
             EmbedCreator.error(
               'Fonds insuffisants',
-              `Vous n'avez pas assez de crédits pour ce pari.\nVotre solde: **${user.balance}** crédits`
+              `Vous n'avez pas assez de PiloCoins pour ce pari.\nVotre solde: **${user.balance}** PiloCoins`
             )
           ],
           ephemeral: true
@@ -74,7 +74,7 @@ export default {
         // Create blackjack embed
         const blackjackEmbed = EmbedCreator.success(
           '🎰 Blackjack!',
-          `Vous avez un blackjack! Vous gagnez **${winnings}** crédits (mise: **${betAmount}** crédits)`,
+          `Vous avez un blackjack! Vous gagnez **${winnings}** PiloCoins (mise: **${betAmount}** PiloCoins)`,
           {
             fields: [
               {
@@ -89,7 +89,7 @@ export default {
               },
               {
                 name: '💰 Nouveau solde',
-                value: `${user.balance + winnings - betAmount} crédits`,
+                value: `${user.balance + winnings - betAmount} PiloCoins`,
                 inline: true
               }
             ],
@@ -103,7 +103,7 @@ export default {
       // Create the initial game embed
       const gameEmbed = EmbedCreator.create({
         title: '🎰 Blackjack',
-        description: `Mise: **${betAmount}** crédits\n\nVotre tour. Que voulez-vous faire?`,
+        description: `Mise: **${betAmount}** PiloCoins\n\nVotre tour. Que voulez-vous faire?`,
         color: 'PRIMARY',
         fields: [
           {
@@ -276,7 +276,7 @@ export default {
       // Create bust embed
       const bustEmbed = EmbedCreator.error(
         '💥 Bust!',
-        `Vous avez dépassé 21! Vous perdez votre mise de **${game.bet}** crédits.`,
+        `Vous avez dépassé 21! Vous perdez votre mise de **${game.bet}** PiloCoins.`,
         {
           fields: [
             {
@@ -291,7 +291,7 @@ export default {
             },
             {
               name: '💰 Nouveau solde',
-              value: `${user.balance} crédits`,
+              value: `${user.balance} PiloCoins`,
               inline: true
             }
           ],
@@ -322,7 +322,7 @@ export default {
     // Update game embed
     const gameEmbed = EmbedCreator.create({
       title: '🎰 Blackjack',
-      description: `Mise: **${game.bet}** crédits\n\nVotre tour. Que voulez-vous faire?`,
+      description: `Mise: **${game.bet}** PiloCoins\n\nVotre tour. Que voulez-vous faire?`,
       color: 'PRIMARY',
       fields: [
         {
@@ -430,7 +430,7 @@ export default {
     // Create result embed
     const resultEmbed = EmbedCreator.create({
       title: '🎰 Blackjack - Résultat',
-      description: `Mise: **${game.bet}** crédits\n\n${outcome}`,
+      description: `Mise: **${game.bet}** PiloCoins\n\n${outcome}`,
       color,
       fields: [
         {
@@ -446,13 +446,13 @@ export default {
         {
           name: '💰 Résultat',
           value: winnings >= 0 
-            ? `+${winnings} crédits`
-            : `${winnings} crédits`,
+            ? `+${winnings} PiloCoins`
+            : `${winnings} PiloCoins`,
           inline: true
         },
         {
           name: '💰 Nouveau solde',
-          value: `${user.balance} crédits`,
+          value: `${user.balance} PiloCoins`,
           inline: true
         }
       ],

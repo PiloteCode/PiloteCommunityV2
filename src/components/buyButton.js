@@ -61,7 +61,7 @@ export default {
             embeds: [
               EmbedCreator.error(
                 'Fonds insuffisants',
-                `Vous n'avez pas assez de crédits pour cet achat.\nPrix: **${totalCost}** crédits | Votre solde: **${user.balance}** crédits`
+                `Vous n'avez pas assez de PiloCoins pour cet achat.\nPrix: **${totalCost}** PiloCoins | Votre solde: **${user.balance}** PiloCoins`
               )
             ],
             components: []
@@ -85,12 +85,12 @@ export default {
             embeds: [
               EmbedCreator.success(
                 'Achat réussi',
-                `Vous avez acheté ${parsedQuantity > 1 ? `**${parsedQuantity}x** ` : ''}**${item.name}** pour **${totalCost}** crédits.`,
+                `Vous avez acheté ${parsedQuantity > 1 ? `**${parsedQuantity}x** ` : ''}**${item.name}** pour **${totalCost}** PiloCoins.`,
                 {
                   fields: [
                     {
                       name: 'Nouveau solde',
-                      value: `**${user.balance - totalCost}** crédits`,
+                      value: `**${user.balance - totalCost}** PiloCoins`,
                       inline: true
                     },
                     {

@@ -60,7 +60,7 @@ export default {
             embeds: [
               EmbedCreator.error(
                 'Prêt existant', 
-                `Vous avez déjà un prêt en cours avec ${totalOwed} crédits restants à rembourser. Utilisez \`/loan rembourser\` pour le rembourser avant d'en contracter un nouveau.`
+                `Vous avez déjà un prêt en cours avec ${totalOwed} PiloCoins restants à rembourser. Utilisez \`/loan rembourser\` pour le rembourser avant d'en contracter un nouveau.`
               )
             ]
           });
@@ -119,7 +119,7 @@ export default {
             fields: [
               {
                 name: '💵 Montant emprunté',
-                value: `${amount} crédits`,
+                value: `${amount} PiloCoins`,
                 inline: true
               },
               {
@@ -129,12 +129,12 @@ export default {
               },
               {
                 name: '💸 Intérêts',
-                value: `${interestAmount} crédits`,
+                value: `${interestAmount} PiloCoins`,
                 inline: true
               },
               {
                 name: '🔄 Montant total à rembourser',
-                value: `${totalToRepay} crédits`,
+                value: `${totalToRepay} PiloCoins`,
                 inline: true
               },
               {

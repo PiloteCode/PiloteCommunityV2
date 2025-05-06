@@ -72,8 +72,8 @@ export default {
           embeds: [
             EmbedCreator.error(
               'Fonds insuffisants',
-              `Vous n'avez pas assez de crédits pour acheter ${quantity > 1 ? `${quantity}x ` : ''}${item.name}.\n` +
-              `Prix: **${totalCost}** crédits | Votre solde: **${user.balance}** crédits`
+              `Vous n'avez pas assez de PiloCoins pour acheter ${quantity > 1 ? `${quantity}x ` : ''}${item.name}.\n` +
+              `Prix: **${totalCost}** PiloCoins | Votre solde: **${user.balance}** PiloCoins`
             )
           ],
           ephemeral: true
@@ -83,7 +83,7 @@ export default {
       // Create confirmation embed
       const confirmEmbed = EmbedCreator.warning(
         'Confirmation d\'achat',
-        `Voulez-vous vraiment acheter ${quantity > 1 ? `**${quantity}x** ` : ''}**${item.name}** pour **${totalCost}** crédits?`,
+        `Voulez-vous vraiment acheter ${quantity > 1 ? `**${quantity}x** ` : ''}**${item.name}** pour **${totalCost}** PiloCoins?`,
         {
           fields: [
             {
@@ -93,7 +93,7 @@ export default {
             },
             {
               name: 'Prix unitaire',
-              value: `${item.price} crédits`,
+              value: `${item.price} PiloCoins`,
               inline: true
             },
             {
@@ -103,17 +103,17 @@ export default {
             },
             {
               name: 'Coût total',
-              value: `${totalCost} crédits`,
+              value: `${totalCost} PiloCoins`,
               inline: true
             },
             {
               name: 'Solde actuel',
-              value: `${user.balance} crédits`,
+              value: `${user.balance} PiloCoins`,
               inline: true
             },
             {
               name: 'Solde après achat',
-              value: `${user.balance - totalCost} crédits`,
+              value: `${user.balance - totalCost} PiloCoins`,
               inline: true
             }
           ]
