@@ -138,28 +138,101 @@ async function loadCommands() {
 async function loadComponents() {
   displayLoadingMessage('Loading interactive components');
   
-  // Load button handlers
+  // Load component handlers (buttons, select menus, modals)
   const componentFiles = readdirSync(join(__dirname, 'components'))
     .filter(file => file.endsWith('.js'));
   
   let loadedCount = 0;
+  let buttonCount = 0;
+  let selectMenuCount = 0;
+  let modalCount = 0;
+  
   for (const file of componentFiles) {
     const componentPath = join(__dirname, 'components', file);
     try {
       const componentModule = await import(`file://${componentPath}`);
       const component = componentModule.default;
       
-      if (component.customId && component.execute) {
-        client.buttons.set(component.customId, component);
+      if (component?.customId && component?.execute) {
+        // Determine component type based on filename or patterns
+        if (file.includes('Button') || file.includes('button')) {
+          client.buttons.set(component.customId, component);
+          buttonCount++;
+          logger.debug(`Loaded button: ${component.customId}`);
+        }
+        else if (file.includes('SelectMenu') || file.includes('selectMenu') || file.includes('select')) {
+          client.selectMenus.set(component.customId, component);
+          selectMenuCount++;
+          logger.debug(`Loaded select menu: ${component.customId}`);
+        }
+        else if (file.includes('Modal') || file.includes('modal')) {
+          client.modals.set(component.customId, component);
+          modalCount++;
+          logger.debug(`Loaded modal: ${component.customId}`);
+        }
+        // Default to button if type can't be determined
+        else {
+          client.buttons.set(component.customId, component);
+          buttonCount++;
+          logger.debug(`Loaded default component: ${component.customId}`);
+        }
+        
         loadedCount++;
-        logger.debug(`Loaded component: ${component.customId}`);
+      }
+      
+      // Load also any custom component handlers
+      if (componentModule.businessButtonHandler) {
+        logger.debug('Loaded businessButtonHandler');
+      }
+      
+      if (componentModule.businessModalHandler) {
+        logger.debug('Loaded businessModalHandler');
+      }
+      
+      if (componentModule.marketButtonHandler) {
+        logger.debug('Loaded marketButtonHandler');
+      }
+      
+      if (componentModule.marketModalHandler) {
+        logger.debug('Loaded marketModalHandler');
+      }
+      
+      if (componentModule.researchButtonHandler) {
+        logger.debug('Loaded researchButtonHandler');
+      }
+      
+      if (componentModule.researchModalHandler) {
+        logger.debug('Loaded researchModalHandler');
+      }
+      
+      if (componentModule.economicButtonHandler) {
+        logger.debug('Loaded economicButtonHandler');
+      }
+      
+      if (componentModule.economicModalHandler) {
+        logger.debug('Loaded economicModalHandler');
+      }
+      
+      // Also load any additional exported components
+      if (componentModule.fireButton && componentModule.fireButton.customId && componentModule.fireButton.execute) {
+        client.buttons.set(componentModule.fireButton.customId, componentModule.fireButton);
+        buttonCount++;
+        loadedCount++;
+        logger.debug(`Loaded additional button: ${componentModule.fireButton.customId}`);
+      }
+      
+      if (componentModule.salaryButton && componentModule.salaryButton.customId && componentModule.salaryButton.execute) {
+        client.buttons.set(componentModule.salaryButton.customId, componentModule.salaryButton);
+        buttonCount++;
+        loadedCount++;
+        logger.debug(`Loaded additional button: ${componentModule.salaryButton.customId}`);
       }
     } catch (error) {
       displayErrorMessage(`Failed to load component ${file}`, error);
     }
   }
   
-  displaySuccessMessage(`Loaded ${loadedCount}/${componentFiles.length} components`);
+  displaySuccessMessage(`Loaded ${loadedCount} components (${buttonCount} buttons, ${selectMenuCount} select menus, ${modalCount} modals)`);
 }
 
 // Enhanced status rotation with priority on discord.gg/PILOTE
@@ -197,6 +270,46 @@ function setupEnhancedStatusRotation() {
   logger.info(`Status rotation activated with primary status: ${primaryStatus.text}`);
 }
 
+// Initialiser les systèmes spéciaux
+async function initSystems() {
+  displayLoadingMessage('Initializing specialized systems');
+  
+  try {
+    // Initialiser le système économique
+    const { EconomicEventSystem } = await import('./utils/economicEvents.js');
+    client.economicEventSystem = new EconomicEventSystem(client);
+    await client.economicEventSystem.initialize();
+    logger.info('Economic Event System initialized');
+    
+    // Initialiser le système de recherche
+    const { ResearchSystem } = await import('./utils/researchSystem.js');
+    client.researchSystem = new ResearchSystem(client);
+    await client.researchSystem.initialize();
+    logger.info('Research System initialized');
+    
+    // Initialiser le système de marché
+    const { MarketSystem } = await import('./utils/marketSystem.js');
+    client.marketSystem = new MarketSystem(client);
+    await client.marketSystem.initialize();
+    logger.info('Market System initialized');
+    
+    // Charger les paramètres globaux depuis la base de données
+    const botSettings = await client.db.db.all('SELECT * FROM bot_settings').catch(() => []);
+    if (botSettings && botSettings.length > 0) {
+      for (const setting of botSettings) {
+        process.env[setting.key] = setting.value;
+        logger.debug(`Loaded setting: ${setting.key}`);
+      }
+    }
+    
+    displaySuccessMessage('Specialized systems initialized');
+    return true;
+  } catch (error) {
+    displayErrorMessage('Failed to initialize specialized systems', error);
+    return false;
+  }
+}
+
 // Initialize the bot with improved structured flow
 async function init() {
   try {
@@ -209,6 +322,9 @@ async function init() {
     displayLoadingMessage('Initializing database');
     await dbManager.initialize();
     displaySuccessMessage('Database initialized successfully');
+    
+    // Initialize specialized systems
+    await initSystems();
     
     // Login with the bot token
     displayLoadingMessage('Logging in to Discord');
@@ -253,17 +369,37 @@ client.once('ready', () => {
 
 // Function to start scheduled tasks
 function startScheduledTasks() {
-  // Example: Check for expired temporary bans every hour
+  // Mettre à jour le système économique toutes les 24 heures
   setInterval(async () => {
-    logger.debug('Running scheduled task: checking expired temporary bans');
-    // Implementation would go here
-  }, 60 * 60 * 1000);
+    logger.debug('Running scheduled task: checking economic cycle');
+    if (client.economicEventSystem) {
+      await client.economicEventSystem.updateEconomicCycle();
+    }
+  }, 24 * 60 * 60 * 1000);
   
-  // Example: Update server stats every 5 minutes
+  // Générer des événements économiques aléatoires toutes les 12 heures
   setInterval(async () => {
-    logger.debug('Running scheduled task: updating server stats');
-    // Implementation would go here
-  }, 5 * 60 * 1000);
+    logger.debug('Running scheduled task: generating random economic event');
+    if (client.economicEventSystem) {
+      await client.economicEventSystem.generateRandomEvent();
+    }
+  }, 12 * 60 * 60 * 1000);
+  
+  // Mettre à jour les événements actifs toutes les 6 heures
+  setInterval(async () => {
+    logger.debug('Running scheduled task: updating active economic events');
+    if (client.economicEventSystem) {
+      await client.economicEventSystem.updateActiveEvents();
+    }
+  }, 6 * 60 * 60 * 1000);
+  
+  // Vérifier les accords commerciaux toutes les heures
+  setInterval(async () => {
+    logger.debug('Running scheduled task: processing trade agreements');
+    if (client.marketSystem) {
+      await client.marketSystem.processTradeAgreements();
+    }
+  }, 60 * 60 * 1000);
   
   logger.info('Scheduled tasks started');
 }
