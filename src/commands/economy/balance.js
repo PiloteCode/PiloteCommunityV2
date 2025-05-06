@@ -1,31 +1,70 @@
-import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
-import { getUser } from '../../database/manager.js';
+import { SlashCommandBuilder } from 'discord.js';
+import { EmbedCreator } from '../../utils/embedCreator.js';
 
-export const data = new SlashCommandBuilder()
-  .setName('balance')
-  .setDescription('Affiche votre solde ou celui d\'un autre utilisateur')
-  .addUserOption(option => 
-    option.setName('utilisateur')
-      .setDescription('Utilisateur dont vous voulez voir le solde')
-      .setRequired(false));
-
-export async function execute(interaction) {
-  const targetUser = interaction.options.getUser('utilisateur') || interaction.user;
-  const userData = await getUser(targetUser.id);
-
-  const embed = new EmbedBuilder()
-    .setColor('#0099ff')
-    .setTitle(`💰 Solde de ${targetUser.username}`)
-    .addFields(
-      { name: 'Portefeuille', value: `${userData.balance}💵`, inline: true },
-      { name: 'Banque', value: `${userData.bank}💵`, inline: true },
-      { name: 'Total', value: `${userData.balance + userData.bank}💵`, inline: true }
-    )
-    .setThumbnail(targetUser.displayAvatarURL())
-    .setTimestamp();
-
-  await interaction.reply({ 
-    embeds: [embed],
-    ephemeral: targetUser.id !== interaction.user.id 
-  });
-}
+export default {
+  data: new SlashCommandBuilder()
+    .setName('balance')
+    .setDescription('Vérifiez votre solde de crédits ou celui d\'un autre utilisateur')
+    .addUserOption(option => 
+      option
+        .setName('utilisateur')
+        .setDescription('Utilisateur dont vous voulez voir le solde')
+        .setRequired(false)
+    ),
+  
+  // No cooldown for this command
+  cooldown: 0,
+  
+  async execute(interaction, client) {
+    try {
+      await interaction.deferReply();
+      
+      // Get target user (mentioned user or self)
+      const targetUser = interaction.options.getUser('utilisateur') || interaction.user;
+      const targetUserId = targetUser.id;
+      
+      // Get user data
+      const userData = await client.db.getUser(targetUserId);
+      
+      // Create and send the embed
+      const embed = EmbedCreator.economy(
+        'Solde',
+        targetUser.id === interaction.user.id 
+          ? `Vous avez actuellement **${userData.balance}** crédits.`
+          : `<@${targetUserId}> a actuellement **${userData.balance}** crédits.`,
+        {
+          thumbnail: targetUser.displayAvatarURL({ dynamic: true }),
+          fields: [
+            {
+              name: '📊 Niveau',
+              value: `${userData.level}`,
+              inline: true
+            },
+            {
+              name: '⭐ Expérience',
+              value: `${userData.experience} XP`,
+              inline: true
+            }
+          ]
+        }
+      );
+      
+      await interaction.editReply({ embeds: [embed] });
+      
+    } catch (error) {
+      console.error('Error in balance command:', error);
+      
+      // Send error message
+      const errorEmbed = EmbedCreator.error(
+        'Erreur',
+        'Une erreur est survenue lors de l\'exécution de la commande.'
+      );
+      
+      if (interaction.deferred) {
+        await interaction.editReply({ embeds: [errorEmbed] });
+      } else {
+        await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+      }
+    }
+  }
+};

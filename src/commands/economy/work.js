@@ -1,80 +1,129 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { getUser, updateUser, addAchievement } from '../../database/manager.js';
+import { EmbedCreator } from '../../utils/embedCreator.js';
 
-const JOBS = [
-  {
-    name: 'Développeur',
-    minPay: 100,
-    maxPay: 300,
-    xp: { min: 10, max: 25 },
-    messages: [
-      "Vous avez développé une nouvelle fonctionnalité",
-      "Vous avez corrigé un bug critique",
-      "Vous avez optimisé la base de données"
-    ]
-  },
-  {
-    name: 'Designer',
-    minPay: 80,
-    maxPay: 250,
-    xp: { min: 8, max: 20 },
-    messages: [
-      "Vous avez créé une superbe interface",
-      "Vous avez redesigné un logo",
-      "Vous avez conçu une maquette"
-    ]
+export default {
+  data: new SlashCommandBuilder()
+    .setName('work')
+    .setDescription('Travaillez pour gagner des crédits'),
+  
+  // Cooldown in milliseconds (1 hour)
+  cooldown: 60 * 60 * 1000,
+  
+  async execute(interaction, client) {
+    try {
+      await interaction.deferReply();
+      
+      const userId = interaction.user.id;
+      
+      // Get user data
+      const user = await client.db.getUser(userId);
+      
+      // Check if user has fishing rod (boosts earnings)
+      const inventory = await client.db.getInventory(userId);
+      const hasFishingRod = inventory.some(item => item.item_id === 'fishing_rod');
+      
+      // Calculate earnings
+      const minAmount = parseInt(process.env.WORK_MIN_AMOUNT) || 50;
+      const maxAmount = parseInt(process.env.WORK_MAX_AMOUNT) || 150;
+      
+      let earnings = Math.floor(Math.random() * (maxAmount - minAmount + 1)) + minAmount;
+      
+      // Apply fishing rod bonus (25% more)
+      if (hasFishingRod) {
+        earnings = Math.floor(earnings * 1.25);
+      }
+      
+      // Add experience points (5-10 XP)
+      const xpGained = Math.floor(Math.random() * 6) + 5;
+      const xpResult = await client.db.addExperience(userId, xpGained);
+      
+      // Update user balance
+      await client.db.updateUserBalance(userId, earnings);
+      
+      // Create an array of possible work scenarios
+      const workScenarios = [
+        {
+          description: `Vous avez passé quelques heures à pêcher et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          emoji: '🎣'
+        },
+        {
+          description: `Vous avez aidé à livrer des colis et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          emoji: '📦'
+        },
+        {
+          description: `Vous avez fait le ménage chez un client et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          emoji: '🧹'
+        },
+        {
+          description: `Vous avez vendu des produits à la boutique locale et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          emoji: '🏪'
+        },
+        {
+          description: `Vous avez réparé le PC de quelqu'un et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          emoji: '💻'
+        },
+        {
+          description: `Vous avez fait des courses pour une personne âgée et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          emoji: '🛒'
+        },
+        {
+          description: `Vous avez participé à une enquête en ligne et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          emoji: '📊'
+        },
+        {
+          description: `Vous avez travaillé comme agent de sécurité et avez gagné **${earnings}** crédits${hasFishingRod ? ' (Bonus: Canne à pêche)' : ''}.`,
+          emoji: '👮'
+        }
+      ];
+      
+      // Select a random scenario
+      const scenario = workScenarios[Math.floor(Math.random() * workScenarios.length)];
+      
+      // Create and send the embed
+      const embed = EmbedCreator.success(
+        `${scenario.emoji} Travail effectué!`,
+        `${scenario.description}`,
+        {
+          fields: [
+            {
+              name: '💰 Solde actuel',
+              value: `${user.balance + earnings} crédits`,
+              inline: true
+            },
+            {
+              name: '⭐ XP gagnée',
+              value: `+${xpGained} XP`,
+              inline: true
+            }
+          ]
+        }
+      );
+      
+      // Add level up notification if user leveled up
+      if (xpResult.leveledUp) {
+        embed.addFields({
+          name: '🎉 Niveau supérieur!',
+          value: `Vous êtes passé au niveau **${xpResult.newLevel}**!`,
+          inline: false
+        });
+      }
+      
+      await interaction.editReply({ embeds: [embed] });
+      
+    } catch (error) {
+      console.error('Error in work command:', error);
+      
+      // Send error message
+      const errorEmbed = EmbedCreator.error(
+        'Erreur',
+        'Une erreur est survenue lors de l\'exécution de la commande.'
+      );
+      
+      if (interaction.deferred) {
+        await interaction.editReply({ embeds: [errorEmbed] });
+      } else {
+        await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+      }
+    }
   }
-];
-
-export const data = new SlashCommandBuilder()
-  .setName('work')
-  .setDescription('Travailler pour gagner de l\'argent');
-
-export async function execute(interaction) {
-  const userData = await getUser(interaction.user.id);
-  const now = new Date();
-  const lastWorked = userData.last_worked ? new Date(userData.last_worked) : null;
-  const cooldown = 3600000;
-
-  if (lastWorked && (now - lastWorked) < cooldown) {
-    const timeLeft = cooldown - (now - lastWorked);
-    const minutesLeft = Math.floor(timeLeft / 60000);
-    return interaction.reply({
-      content: `⏰ Vous devez attendre encore ${minutesLeft} minutes avant de retravailler.`,
-      ephemeral: true
-    });
-  }
-
-  const job = JOBS[Math.floor(Math.random() * JOBS.length)];
-  const earnedMoney = Math.floor(Math.random() * (job.maxPay - job.minPay + 1)) + job.minPay;
-  const earnedXP = Math.floor(Math.random() * (job.xp.max - job.xp.min + 1)) + job.xp.min;
-  const message = job.messages[Math.floor(Math.random() * job.messages.length)];
-
-
-  const newXP = userData.experience + earnedXP;
-  const newLevel = Math.floor(newXP / 1000) + 1;
-  const leveledUp = newLevel > userData.level;
-
-
-  await updateUser(userData.user_id, {
-    balance: userData.balance + earnedMoney,
-    experience: newXP,
-    level: newLevel,
-    last_worked: now.toISOString()
-  });
-
-
-  if (leveledUp) {
-    await addAchievement(userData.user_id, `level_${newLevel}`);
-  }
-
-  let response = `💼 En tant que ${job.name}, ${message}\n`;
-  response += `💵 Vous avez gagné ${earnedMoney} coins\n`;
-  response += `📊 +${earnedXP} XP`;
-
-  if (leveledUp) {
-    response += `\n🎉 Félicitations! Vous êtes passé au niveau ${newLevel}!`;
-  }
-
-  await interaction.reply({ content: response, ephemeral: false });
-}
+};
