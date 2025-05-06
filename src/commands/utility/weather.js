@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const axios = require('axios');
-const config = require('../../config/config.js');
-const logger = require('../../utils/logs/logger.js');
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import axios from 'axios';
+import config from '../../config/config.js';
+import logger from '../../utils/logs/logger.js';
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('weather')
         .setDescription('Affiche les informations météorologiques pour une ville')
@@ -12,7 +12,7 @@ module.exports = {
                 .setDescription('Nom de la ville')
                 .setRequired(true)),
     
-    async execute(interaction) {
+    async execute(interaction, client) {
         await interaction.deferReply();
         
         try {

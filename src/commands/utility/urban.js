@@ -1,8 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const axios = require('axios');
-const logger = require('../../utils/logs/logger.js');
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import axios from 'axios';
+import logger from '../../utils/logs/logger.js';
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('urban')
         .setDescription('Recherche une définition sur Urban Dictionary')
@@ -11,7 +11,7 @@ module.exports = {
                 .setDescription('Le terme à rechercher')
                 .setRequired(true)),
     
-    async execute(interaction) {
+    async execute(interaction, client) {
         await interaction.deferReply();
         
         try {

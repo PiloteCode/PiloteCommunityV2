@@ -1,7 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder, ChannelType } = require('discord.js');
-const logger = require('../../utils/logs/logger.js');
+import { SlashCommandBuilder, EmbedBuilder, ChannelType } from 'discord.js';
+import logger from '../../utils/logs/logger.js';
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('channelinfo')
         .setDescription('Affiche les informations sur un salon')
@@ -10,7 +10,7 @@ module.exports = {
                 .setDescription('Le salon dont vous souhaitez voir les informations')
                 .setRequired(false)),
     
-    async execute(interaction) {
+    async execute(interaction, client) {
         const channel = interaction.options.getChannel('salon') || interaction.channel;
         
         try {
@@ -82,7 +82,7 @@ module.exports = {
                 
             // Ajouter les informations supplémentaires spécifiques au type de salon
             if (additionalInfo.length > 0) {
-                channelEmbed.addFields({ name: 'Informations supplémentaires', value: additionalInfo.join('\\n') });
+                channelEmbed.addFields({ name: 'Informations supplémentaires', value: additionalInfo.join('\n') });
             }
             
             // Permissions (limité aux plus importantes pour éviter de surcharger l'embed)
@@ -102,7 +102,7 @@ module.exports = {
                         ? `@${interaction.guild.roles.cache.get(id).name}`
                         : interaction.guild.members.cache.get(id)?.user.username || 'Utilisateur inconnu';
                     
-                    permissionsText += `${isRole ? 'Rôle' : 'Membre'}: ${target}\\n`;
+                    permissionsText += `${isRole ? 'Rôle' : 'Membre'}: ${target}\n`;
                     count++;
                 }
                 

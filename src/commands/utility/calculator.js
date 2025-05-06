@@ -1,7 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const logger = require('../../utils/logs/logger.js');
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import logger from '../../utils/logs/logger.js';
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('calculator')
         .setDescription('Effectue un calcul mathématique')
@@ -10,7 +10,7 @@ module.exports = {
                 .setDescription('L\'expression mathématique à calculer')
                 .setRequired(true)),
     
-    async execute(interaction) {
+    async execute(interaction, client) {
         const expression = interaction.options.getString('expression');
         
         try {

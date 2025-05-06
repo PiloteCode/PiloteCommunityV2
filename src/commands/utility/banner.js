@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const axios = require('axios');
-const logger = require('../../utils/logs/logger.js');
-const config = require('../../config/config.js');
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import axios from 'axios';
+import logger from '../../utils/logs/logger.js';
+import config from '../../config/config.js';
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('banner')
         .setDescription('Affiche la bannière d\'un utilisateur ou du serveur')
@@ -20,7 +20,7 @@ module.exports = {
                 .setName('server')
                 .setDescription('Affiche la bannière du serveur')),
     
-    async execute(interaction) {
+    async execute(interaction, client) {
         await interaction.deferReply();
         
         try {

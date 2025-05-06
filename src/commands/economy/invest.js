@@ -1,5 +1,5 @@
-import { SlashCommandBuilder } = require('discord.js');
-import { EmbedCreator } = require('../../utils/embedCreator.js');
+import { SlashCommandBuilder } from 'discord.js';
+import { EmbedCreator } from '../../utils/embedCreator.js';
 
 export default {
   data: new SlashCommandBuilder()

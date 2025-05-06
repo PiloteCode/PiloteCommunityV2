@@ -1,7 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const logger = require('../../utils/logs/logger.js');
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import logger from '../../utils/logs/logger.js';
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('roleinfo')
         .setDescription('Affiche les informations sur un rôle')
@@ -10,7 +10,7 @@ module.exports = {
                 .setDescription('Le rôle dont vous souhaitez voir les informations')
                 .setRequired(true)),
     
-    async execute(interaction) {
+    async execute(interaction, client) {
         const role = interaction.options.getRole('role');
         
         try {
