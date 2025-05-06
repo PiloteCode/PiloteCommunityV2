@@ -1,15 +1,11 @@
 import { ActivityType } from 'discord.js';
 import logger from '../utils/logs/logger.js';
-import { displayReadyMessage } from '../utils/startupScreen.js';
 
 export default {
   name: 'ready',
   once: true,
   async execute(client) {
     logger.info(`Bot connected as ${client.user.tag}`);
-    
-    // Display ready message with stats
-    displayReadyMessage(client);
     
     // Clear expired cooldowns
     try {

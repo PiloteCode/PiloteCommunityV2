@@ -9,8 +9,7 @@ import {
   displayStartupBanner, 
   displayLoadingMessage, 
   displaySuccessMessage, 
-  displayErrorMessage,
-  displayReadyMessage
+  displayErrorMessage
 } from './utils/startupScreen.js';
 
 // Load environment variables
@@ -24,7 +23,7 @@ const __dirname = dirname(__filename);
 const BOT_CONFIG = {
   version: '2.0.0',
   author: 'Pilote Production',
-  website: 'https://pilote.com'
+  website: 'https://piloteshopping.com'
 };
 
 // Display startup banner
@@ -172,7 +171,7 @@ function setupEnhancedStatusRotation() {
     { text: 'vos commandes', type: ActivityType.Listening },
     { text: '/help pour de l\'aide', type: ActivityType.Playing },
     { text: 'la communauté grandir', type: ActivityType.Watching },
-    { text: 'bot.pilote.com', type: ActivityType.Watching },
+    { text: 'piloteshopping.com', type: ActivityType.Watching },
   ];
   
   let index = 0;
@@ -239,9 +238,6 @@ async function init() {
 client.once('ready', () => {
   // Set up the enhanced status rotation
   setupEnhancedStatusRotation();
-  
-  // Display advanced ready message
-  displayReadyMessage(client);
   
   // Log detailed bot statistics
   const guildCount = client.guilds.cache.size;
